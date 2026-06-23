@@ -1,231 +1,120 @@
 import streamlit as st
 
-# --- CẤU HÌNH TRANG ---
-st.set_page_config(
-    page_title="VTrack - Ứng dụng nghe nhạc trực tuyến",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# --- KHỞI TẠO ĐIỀU HƯỚNG ---
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
 
-# --- KHỞI TẠO STATE ĐỂ ĐIỀU HƯỚNG ---
-if "current_page" not in st.session_state:
-    st.session_state.current_page = "Home"
+# Thanh điều hướng hàng ngang đơn giản
+nav = st.columns([2, 4, 2, 2])
 
-# Hàm chuyển trang tiện lợi
-def navigate_to(page_name):
-    st.session_state.current_page = page_name
+with nav[0]:
+    try:
+        st.image("logo.png", width=110)
+    except:
+        st.write("### 🎵 YTrack")
 
-# --- 1. THANH ĐIỀU HƯỚNG TRÊN CÙNG (TOP NAVIGATION BAR) ---
-# Sử dụng st.columns thuần túy chia tỉ lệ để tạo một thanh ngang cân đối
-nav_cols = st.columns([1.5, 0.6, 4.5, 1.2, 1.0, 0.6, 0.6, 0.6, 1.2, 1.2])
+with nav[1]:
+    st.text_input("Tìm kiếm...", label_visibility="collapsed")
 
-with nav_cols[0]:
-    # Hiển thị Logo ứng dụng YTrack
-    st.image("logo.png", use_container_width=True)
+with nav[2]:
+    c1, c2 = st.columns(2)
+    if c1.button("🏠 Home"):
+        st.session_state.page = "Home"
+    if c2.button("📚 Thư viện"):
+        st.session_state.page = "Thư viện"
 
-with nav_cols[1]:
-    # Nút bấm Home dạng icon hình ngôi nhà (sử dụng ảnh D06home.jpg)
-    if st.button("Home", key="nav_home_btn", use_container_width=True):
-        navigate_to("Home")
+with nav[3]:
+    c3, c4 = st.columns(2)
+    if c3.button("Đăng nhập"):
+        st.session_state.page = "Đăng nhập"
+    if c4.button("Đăng ký"):
+        st.session_state.page = "Đăng ký"
 
-with nav_cols[2]:
-    # Ô tìm kiếm nghệ sĩ, bài hát...
-    st.text_input("Tìm kiếm", placeholder="Tìm kiếm nghệ sĩ, bài hát, ...", label_visibility="collapsed")
+st.write("---")
 
-with nav_cols[3]:
-    if st.button("Giới thiệu", key="nav_about", use_container_width=True):
-        st.toast("Trang Giới thiệu đang phát triển!")
-
-with nav_cols[4]:
-    if st.button("Hỗ trợ", key="nav_support", use_container_width=True):
-        st.toast("Trang Hỗ trợ đang phát triển!")
-
-with nav_cols[5]:
-    # Icon Ngôn ngữ
-    st.image("D01language.png", width=32)
-
-with nav_cols[6]:
-    # Icon Chuông thông báo
-    st.image("D02notification.png", width=32)
-
-with nav_cols[7]:
-    # Icon User Profile
-    st.image("D03user_icon.png", width=32)
-
-with nav_cols[8]:
-    if st.button("Đăng nhập", key="nav_login", use_container_width=True):
-        navigate_to("Đăng nhập")
-
-with nav_cols[9]:
-    if st.button("Đăng ký", key="nav_register", use_container_width=True):
-        navigate_to("Đăng ký")
-
-st.write("---") # Đường kẻ chia cách thanh điều hướng với nội dung bên dưới
-
-# --- 2. XỬ LÝ NỘI DUNG TỪNG TRANG THEO TRẠNG THÁI ---
-
-# ================= TRANG HOME =================
-if st.session_state.current_page == "Home":
-    st.title("Nghe gì hôm nay, User ?")
-    st.caption("Hôm nay Thứ bảy, 20-06-2026")
+# --- QUẢN LÝ HIỂN THỊ TRANG ---
+if st.session_state.page == "Home":
+    st.write("# Nghe gì hôm nay, User?")
     
-    # Khu vực Banner chính (Best Notification)
-    st.image("best_notification.png", caption="Sản phẩm mới nhất từ ca nương Kiều Anh", use_container_width=True)
-    
-    # --- PHẦN 1: NGHỆ SĨ PHỔ BIẾN ---
+    try:
+        st.image("best_notification.png")
+    except:
+        st.info("[Banner: LÁ NGỌC CÀNH VÀNG]")
+
     st.write("## Nghệ sĩ phổ biến")
-    artist_cols = st.columns([2, 2, 2, 2, 1, 1])
-    
-    with artist_cols[0]:
-        st.image("A01son_tung.jpg", use_container_width=True)
-        if st.button("Xem Sơn Tùng M-TP", key="home_st"):
-            st.toast("Thông tin nghệ sĩ")
-    with artist_cols[1]:
-        st.image("A02soobin.jpg", use_container_width=True)
-        if st.button("Xem SOOBIN", key="home_sb"):
-            st.toast("Thông tin nghệ sĩ")
-    with artist_cols[2]:
-        st.image("A03buitruonglinh.png", use_container_width=True)
-        if st.button("Xem bùi trường linh", key="home_btl"):
-            st.toast("Thông tin nghệ sĩ")
-    with artist_cols[3]:
-        st.image("A04trang_phap.jpg", use_container_width=True)
-        if st.button("Xem Trang Pháp", key="home_tp"):
-            navigate_to("Nghệ sĩ")
-    with artist_cols[4]:
-        st.image("A05more.png", use_container_width=True)
-        if st.button("Thêm nghệ sĩ", key="home_more_art"):
-            navigate_to("Thư viện")
+    art_cols = st.columns(5)
+    artists = [
+        ("Sơn Tùng M-TP", "A01son_tung.jpg"),
+        ("SOOBIN", "A02soobin.jpg"),
+        ("bùi trường linh", "A03buitruonglinh.png"),
+        ("Trang Pháp", "A04trang_phap.jpg"),
+        ("Xem thêm", "A05more.png")
+    ]
+    for i, (name, img_file) in enumerate(artists):
+        with art_cols[i]:
+            try:
+                st.image(img_file)
+            except:
+                st.write(f"[{name}]")
+            if st.button(name, key=f"art_{i}"):
+                if name == "Trang Pháp":
+                    st.session_state.page = "Nghệ sĩ"
 
-    # --- PHẦN 2: ALBUM NỔI BẬT ---
     st.write("## Album nổi bật")
-    album_cols = st.columns([2, 2, 2, 2, 2, 1])
-    
-    with album_cols[0]:
-        st.image("B01mtp_mtp.jpg", use_container_width=True)
-    with album_cols[1]:
-        st.image("B02ai_cung_phai_bat_dau_tu_dau_do.jpg", use_container_width=True)
-    with album_cols[2]:
-        st.image("B03danh_doi.jpg", use_container_width=True)
-    with album_cols[3]:
-        st.image("B04bat_no_len.jpg", use_container_width=True)
-    with album_cols[4]:
-        st.image("B05tung_ngay_nhu_mai_mai.jpg", use_container_width=True)
-    with album_cols[5]:
-        st.image("B06more.png", use_container_width=True)
+    alb_cols = st.columns(6)
+    albums = ["B01mtp_mtp.jpg", "B02ai_cung_phai_bat_dau_tu_dau_do.jpg", "B03danh_doi.jpg", "B04bat_no_len.jpg", "B05tung_ngay_nhu_mai_mai.jpg", "B06more.png"]
+    for i, alb in enumerate(albums):
+        with alb_cols[i]:
+            try:
+                st.image(alb)
+            except:
+                st.write(f"[Album {i+1}]")
 
-    # --- PHẦN 3: BXH BÀI HÁT NỔI BẬT THÁNG NÀY ---
     st.write("## BXH bài hát nổi bật *Tháng này*")
-    
-    col_bxh_left, col_bxh_right = st.columns([4, 6])
-    
-    with col_bxh_left:
-        # Hiển thị ảnh Bài hát đứng đầu (#1 Come My Way)
-        st.image("come_my_way.jpg", use_container_width=True)
-        
-    with col_bxh_right:
-        songs_data = [
-            {"rank": "2", "title": "Em", "artist": "Binz"},
-            {"rank": "3", "title": "Nếu như ta chẳng còn", "artist": "RPT MCK"},
-            {"rank": "4", "title": "IDK", "artist": "RPT MCK"},
-            {"rank": "5", "title": "Nguyễn Văn Mười", "artist": "RPT MCK"},
-            {"rank": "6", "title": "người còn thương em không", "artist": "Tóc Tiên"},
-            {"rank": "7", "title": "LÁ NGỌC CÀNH VÀNG", "artist": "Kiều Anh"},
-            {"rank": "8", "title": "Có công mài “sắc” Afrobeats", "artist": "Ngô Lan Hương"},
-            {"rank": "9", "title": "Tây Thi", "artist": "RPT MCK"},
-            {"rank": "10", "title": "toidaidot", "artist": "GREY D"},
-        ]
-        
-        for song in songs_data:
-            c_rank_title, c_artist = st.columns([7, 3])
-            with c_rank_title:
-                st.write(f"{song['rank']}. {song['title']}")
-            with c_artist:
-                st.write(f"**{song['artist']}**")
+    bxh_l, bxh_r = st.columns([4, 6])
+    with bxh_l:
+        try:
+            st.image("come_my_way.jpg")
+        except:
+            st.write("[#1 Come My Way]")
+            
+    with bxh_r:
+        songs = [("2", "Em", "Binz"), ("3", "Nếu như ta chẳng còn", "RPT MCK"), ("4", "IDK", "RPT MCK"), ("5", "Nguyễn Văn Mười", "RPT MCK"), ("6", "người còn thương em không", "Tóc Tiên")]
+        for rank, title, artist in songs:
+            sl, sr = st.columns([8, 2])
+            sl.write(f"{rank}. {title}")
+            sr.write(f"**{artist}**")
 
-# ================= TRANG NGHỆ SĨ (CHI TIẾT) =================
-elif st.session_state.current_page == "Nghệ sĩ":
-    header_cols = st.columns([2, 8])
-    with header_cols[0]:
-        if st.button("⬅ Back", key="artist_back"):
-            navigate_to("Home")
-    with header_cols[1]:
-        st.write("### NGHỆ SĨ PHỔ BIẾN")
-        
+elif st.session_state.page == "Nghệ sĩ":
+    if st.button("⬅ Quay lại"):
+        st.session_state.page = "Home"
     st.write("---")
-    
-    body_left, body_right = st.columns([4, 6])
-    with body_left:
-        st.image("trang_phap.jpg", use_container_width=True)
-    with body_right:
-        st.markdown("# Trang Pháp và hành trình trong CHENGFENG 2026")
-        
-        # Nút chức năng hàng ngang
-        action_cols = st.columns([3, 4, 1, 1])
-        with action_cols[0]:
-            st.button("Phát danh sách", key="play_tp_list")
-        with action_cols[1]:
-            st.write("7 bài hát • 24 phút 42 giây")
-        with action_cols[2]:
-            st.image("D04add.png", width=28)
-        with action_cols[3]:
-            st.image("D05more_setting.png", width=28)
-            
-        st.write("#### Danh sách bài hát:")
-        songs_tp = ["MOONLIGHT", "Nghệ thuật Gia Vị Đại", "Là Anh", "Ego-holic", "Nghịch Chiến", "Sổ Tay Rèn Luyện Thanh Xuân", "DNA"]
-        for idx, song_name in enumerate(songs_tp, start=1):
-            st.write(f"{idx}. {song_name}")
-            
-    st.write("---")
-    st.write("### Có thể bạn thích")
-    like_cols = st.columns([3, 3, 4, 2])
-    with like_cols[0]:
-        st.image("C01chi_pu.jpg", use_container_width=True)
-    with like_cols[1]:
-        st.image("C02suni_ha_linh.jpg", use_container_width=True)
-    with like_cols[2]:
-        st.image("C03lonely_dance.png", use_container_width=True)
+    l, r = st.columns([4, 6])
+    with l:
+        try:
+            st.image("trang_phap.jpg")
+        except:
+            st.write("[Ảnh Trang Pháp]")
+    with r:
+        st.write("# Trang Pháp và hành trình")
+        st.write("▶ Phát tất cả | 7 bài hát")
+        st.write("---")
+        for i, s in enumerate(["MOONLIGHT", "Nghệ thuật Gia Vị Đại", "Là Anh", "Ego-holic"], 1):
+            st.write(f"{i}. {s}")
 
-# ================= TRANG THƯ VIỆN =================
-elif st.session_state.current_page == "Thư viện":
-    st.image("thu_vien_yeu_thich.png", use_container_width=True)
-    st.write("### Danh sách thư viện yêu thích của bạn đang được đồng bộ...")
-    if st.button("Quay lại Trang chủ", key="lib_back_home"):
-        navigate_to("Home")
+elif st.session_state.page == "Thư viện":
+    try:
+        st.image("thu_vien_yeu_thich.png")
+    except:
+        st.title("Thư viện yêu thích")
+    if st.button("Trở về"):
+        st.session_state.page = "Home"
 
-# ================= TRANG ĐĂNG NHẬP / ĐĂNG KÝ =================
-elif st.session_state.current_page in ["Đăng nhập", "Đăng ký"]:
-    form_col_l, form_col_main, form_col_r = st.columns([3, 6, 3])
-    
-    with form_col_main:
-        if st.session_state.current_page == "Đăng nhập":
-            st.image("Đăng nhập.jpg", use_container_width=True)
-            st.write("---")
-            username = st.text_input("Tên tài khoản (Username)", key="login_user")
-            password = st.text_input("Mật khẩu (Password)", type="password", key="login_pass")
-            
-            c_btn1, c_btn2 = st.columns(2)
-            with c_btn1:
-                if st.button("Đăng nhập ngay", key="do_login_action"):
-                    st.success("Đăng nhập thành công!")
-                    navigate_to("Home")
-            with c_btn2:
-                if st.button("Chuyển sang tạo tài khoản Đăng ký", key="go_reg"):
-                    navigate_to("Đăng ký")
-                    
-        else:
-            st.image("Đăng ký.jpg", use_container_width=True)
-            st.write("---")
-            reg_user = st.text_input("Tên tài khoản (Username)", key="reg_user")
-            reg_email = st.text_input("Địa chỉ email (Email address)", key="reg_email")
-            reg_pass = st.text_input("Mật khẩu (Password)", type="password", key="reg_pass")
-            reg_pass_conf = st.text_input("Xác thực lại mật khẩu", type="password", key="reg_pass_confirm")
-            
-            c_btn3, c_btn4 = st.columns(2)
-            with c_btn3:
-                if st.button("Đăng ký ngay", key="do_reg_action"):
-                    st.success("Đăng ký tài khoản thành công!")
-                    navigate_to("Đăng nhập")
-            with c_btn4:
-                if st.button("Đã có tài khoản? Đăng nhập", key="go_login"):
-                    navigate_to("Đăng nhập")
+elif st.session_state.page in ["Đăng nhập", "Đăng ký"]:
+    if st.button(" Trở về"):
+        st.session_state.page = "Home"
+    st.write(f"### Trang {st.session_state.page}")
+    st.text_input("Username")
+    st.text_input("Password", type="password")
+    if st.button("Xác nhận"):
+        st.session_state.page = "Home"
