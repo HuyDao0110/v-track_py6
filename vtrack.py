@@ -1,17 +1,21 @@
 import streamlit as st
 
+# Địa chỉ cơ sở đến thư mục chứa ảnh trên GitHub của bạn (Hãy thay bằng link của bạn)
+# Lưu ý: Kết thúc bằng dấu gạch chéo /
+GITHUB_IMAGE_BASE = "https://raw.githubusercontent.com/HuyDao0110/#image/main/"
+
+st.set_page_config(page_title="YTrack - GitHub Cloud", layout="wide")
+
 # --- KHỞI TẠO ĐIỀU HƯỚNG ---
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-# Thanh điều hướng hàng ngang đơn giản
+# 1. Thanh điều hướng hàng ngang
 nav = st.columns([2, 4, 2, 2])
 
 with nav[0]:
-    try:
-        st.image("logo.png", width=110)
-    except:
-        st.write("### 🎵 YTrack")
+    # Tải LOGO trực tiếp từ GitHub
+    st.image(GITHUB_IMAGE_BASE + "logo.png", width=110)
 
 with nav[1]:
     st.text_input("Tìm kiếm...", label_visibility="collapsed")
@@ -32,14 +36,12 @@ with nav[3]:
 
 st.write("---")
 
-# --- QUẢN LÝ HIỂN THỊ TRANG ---
+# --- 2. QUẢN LÝ HIỂN THỊ TRANG ---
 if st.session_state.page == "Home":
     st.write("# Nghe gì hôm nay, User?")
     
-    try:
-        st.image("best_notification.png")
-    except:
-        st.info("[Banner: LÁ NGỌC CÀNH VÀNG]")
+    # Tải BANNER chính từ GitHub
+    st.image(GITHUB_IMAGE_BASE + "best_notification.png", use_container_width=True)
 
     st.write("## Nghệ sĩ phổ biến")
     art_cols = st.columns(5)
@@ -52,35 +54,41 @@ if st.session_state.page == "Home":
     ]
     for i, (name, img_file) in enumerate(artists):
         with art_cols[i]:
-            try:
-                st.image(img_file)
-            except:
-                st.write(f"[{name}]")
-            if st.button(name, key=f"art_{i}"):
+            # Ghép link gốc GitHub với tên file tương ứng
+            st.image(GITHUB_IMAGE_BASE + img_file, use_container_width=True)
+            if st.button(name, key=f"art_{i}", use_container_width=True):
                 if name == "Trang Pháp":
                     st.session_state.page = "Nghệ sĩ"
 
     st.write("## Album nổi bật")
     alb_cols = st.columns(6)
-    albums = ["B01mtp_mtp.jpg", "B02ai_cung_phai_bat_dau_tu_dau_do.jpg", "B03danh_doi.jpg", "B04bat_no_len.jpg", "B05tung_ngay_nhu_mai_mai.jpg", "B06more.png"]
+    albums = [
+        "B01mtp_mtp.jpg", "B02ai_cung_phai_bat_dau_tu_dau_do.jpg", 
+        "B03danh_doi.jpg", "B04bat_no_len.jpg", 
+        "B05tung_ngay_nhu_mai_mai.jpg", "B06more.png"
+    ]
     for i, alb in enumerate(albums):
         with alb_cols[i]:
-            try:
-                st.image(alb)
-            except:
-                st.write(f"[Album {i+1}]")
+            st.image(GITHUB_IMAGE_BASE + alb, use_container_width=True)
 
     st.write("## BXH bài hát nổi bật *Tháng này*")
     bxh_l, bxh_r = st.columns([4, 6])
     with bxh_l:
-        try:
-            st.image("come_my_way.jpg")
-        except:
-            st.write("[#1 Come My Way]")
+        st.image(GITHUB_IMAGE_BASE + "come_my_way.jpg", use_container_width=True)
             
     with bxh_r:
-        songs = [("2", "Em", "Binz"), ("3", "Nếu như ta chẳng còn", "RPT MCK"), ("4", "IDK", "RPT MCK"), ("5", "Nguyễn Văn Mười", "RPT MCK"), ("6", "người còn thương em không", "Tóc Tiên")]
-        for rank, title, artist in songs:
+        songs = [
+            ("2", "Em", "Binz"), 
+            {"rank": "3", "title": "Nếu như ta chẳng còn", "artist": "RPT MCK"},
+            {"rank": "4", "title": "IDK", "artist": "RPT MCK"},
+            {"rank": "5", "title": "Nguyễn Văn Mười", "artist": "RPT MCK"},
+            {"rank": "6", "title": "người còn thương em không", "artist": "Tóc Tiên"}
+        ]
+        for s in songs:
+            if isinstance(s, tuple):  # Xử lý phần dữ liệu cũ
+                rank, title, artist = s
+            else:
+                rank, title, artist = s["rank"], s["title"], s["artist"]
             sl, sr = st.columns([8, 2])
             sl.write(f"{rank}. {title}")
             sr.write(f"**{artist}**")
@@ -91,10 +99,7 @@ elif st.session_state.page == "Nghệ sĩ":
     st.write("---")
     l, r = st.columns([4, 6])
     with l:
-        try:
-            st.image("trang_phap.jpg")
-        except:
-            st.write("[Ảnh Trang Pháp]")
+        st.image(GITHUB_IMAGE_BASE + "trang_phap.jpg", use_container_width=True)
     with r:
         st.write("# Trang Pháp và hành trình")
         st.write("▶ Phát tất cả | 7 bài hát")
@@ -103,10 +108,7 @@ elif st.session_state.page == "Nghệ sĩ":
             st.write(f"{i}. {s}")
 
 elif st.session_state.page == "Thư viện":
-    try:
-        st.image("thu_vien_yeu_thich.png")
-    except:
-        st.title("Thư viện yêu thích")
+    st.image(GITHUB_IMAGE_BASE + "thu_vien_yeu_thich.png", use_container_width=True)
     if st.button("Trở về"):
         st.session_state.page = "Home"
 
